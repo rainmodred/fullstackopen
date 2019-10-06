@@ -4,15 +4,19 @@ function Header({ course }) {
   return <h1>{course}</h1>;
 }
 
+function Part({ part, exercisesCount }) {
+  return (
+    <p>
+      {part} {exercisesCount}
+    </p>
+  );
+}
+
 function Content({ content }) {
   return (
     <>
       {content.map(({ part, exercisesCount }) => {
-        return (
-          <p>
-            {part} {exercisesCount}
-          </p>
-        );
+        return <Part part={part} exercisesCount={exercisesCount} />;
       })}
     </>
   );
