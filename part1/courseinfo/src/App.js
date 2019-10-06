@@ -12,11 +12,11 @@ function Part({ part, exercisesCount }) {
   );
 }
 
-function Content({ content }) {
+function Content({ parts }) {
   return (
     <>
-      {content.map(({ part, exercisesCount }) => {
-        return <Part part={part} exercisesCount={exercisesCount} />;
+      {parts.map(({ name, exercises }) => {
+        return <Part part={name} exercisesCount={exercises} />;
       })}
     </>
   );
@@ -27,21 +27,30 @@ function Total({ total }) {
 }
 
 function App() {
-  const course = 'Half Stack application development';
-  const content = [
-    { part: 'Fundamentals of React', exercisesCount: 10 },
-    { part: 'Using props to pass data', exercisesCount: 7 },
-    { part: 'State of a component', exercisesCount: 14 },
-  ];
+  const course = {
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10,
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+      },
+      {
+        name: 'State of a component',
+        exercises: 14,
+      },
+    ],
+  };
 
-  const total = content.reduce((prev, curr, indx, array) => {
-    return prev + curr.exercisesCount;
-  }, 0);
+  const total = course.parts.reduce((prev, curr) => prev + curr.exercises, 0);
 
   return (
     <>
-      <Header course={course} />
-      <Content content={content} />
+      <Header course={course.name} />
+      <Content parts={course.parts} />
       <Total total={total} />
     </>
   );
