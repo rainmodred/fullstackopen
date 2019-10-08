@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
-function Statistic({ text, value }) {
-  return (
-    <p>
-      {text} {value}
-    </p>
-  );
-}
-
 function Button({ onClick, value }) {
   return <button onClick={onClick}>{value}</button>;
+}
+
+function Statistic({ text, value }) {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}%</td>
+    </tr>
+  );
 }
 
 function Staticstics({ good, neutral, bad }) {
@@ -27,14 +28,16 @@ function Staticstics({ good, neutral, bad }) {
   }
 
   return (
-    <>
-      <Statistic text="good" value={good} />
-      <Statistic text="neutral" value={neutral} />
-      <Statistic text="bad" value={bad} />
-      <Statistic text="all" value={all} />
-      <Statistic text="average" value={average} />
-      <Statistic text="positive" value={positive} />
-    </>
+    <table>
+      <tbody>
+        <Statistic text="good" value={good} />
+        <Statistic text="neutral" value={neutral} />
+        <Statistic text="bad" value={bad} />
+        <Statistic text="all" value={all} />
+        <Statistic text="average" value={average} />
+        <Statistic text="positive" value={positive} />
+      </tbody>
+    </table>
   );
 }
 
