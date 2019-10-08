@@ -7,14 +7,23 @@ function getRandomInt(max) {
 
 function App({ anecdotes }) {
   const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0));
 
   function handleNextClick() {
     setSelected(getRandomInt(anecdotes.length));
   }
 
+  function handleVote() {
+    const newVotes = [...votes];
+    newVotes[selected] += 1;
+    setVotes(newVotes);
+  }
+
   return (
     <div>
       <p>{anecdotes[selected]}</p>
+      <p>has {votes[selected]} votes</p>
+      <button onClick={handleVote}>vote</button>
       <button onClick={handleNextClick}>next anecdote</button>
     </div>
   );
