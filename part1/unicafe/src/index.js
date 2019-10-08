@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
+function Statistic({ text, value }) {
+  return (
+    <p>
+      {text} {value}
+    </p>
+  );
+}
+
+function Button({ onClick, value }) {
+  return <button onClick={onClick}>{value}</button>;
+}
+
 function Staticstics({ good, neutral, bad }) {
   const all = good + neutral + bad;
   const average = all === 0 ? 0 : (good - bad) / all;
@@ -9,7 +21,6 @@ function Staticstics({ good, neutral, bad }) {
   if (all === 0) {
     return (
       <>
-        <h2>statistics</h2>
         <p>No feedback given</p>
       </>
     );
@@ -17,13 +28,12 @@ function Staticstics({ good, neutral, bad }) {
 
   return (
     <>
-      <h2>statistics</h2>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {all}</p>
-      <p>average {average}</p>
-      <p>positive {positive}%</p>
+      <Statistic text="good" value={good} />
+      <Statistic text="neutral" value={neutral} />
+      <Statistic text="bad" value={bad} />
+      <Statistic text="all" value={all} />
+      <Statistic text="average" value={average} />
+      <Statistic text="positive" value={positive} />
     </>
   );
 }
@@ -37,9 +47,10 @@ function App() {
   return (
     <div>
       <h2>give feedback</h2>
-      <button onClick={() => setGood(good + 1)}>good</button>
-      <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
-      <button onClick={() => setBad(bad + 1)}>bad</button>
+      <Button onClick={() => setGood(good + 1)} value={'good'} />
+      <Button onClick={() => setNeutral(neutral + 1)} value={'neutral'} />
+      <Button onClick={() => setBad(bad + 1)} value={'bad'} />
+      <h2>statistics</h2>
       <Staticstics good={good} neutral={neutral} bad={bad} />
     </div>
   );
