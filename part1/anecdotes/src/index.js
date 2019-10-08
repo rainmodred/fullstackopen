@@ -19,12 +19,22 @@ function App({ anecdotes }) {
     setVotes(newVotes);
   }
 
+  function getMVAnecdote() {
+    const mostVotes = Math.max(...votes);
+    const mostVotesInd = votes.indexOf(mostVotes);
+    return mostVotesInd;
+  }
+
   return (
     <div>
+      <h2>Anecdote of the day</h2>
       <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
       <button onClick={handleVote}>vote</button>
       <button onClick={handleNextClick}>next anecdote</button>
+      <h2>Anecdote wtih most votes</h2>
+      <p>{anecdotes[getMVAnecdote()]}</p>
+      <p>has {votes[getMVAnecdote()]} votes</p>
     </div>
   );
 }
