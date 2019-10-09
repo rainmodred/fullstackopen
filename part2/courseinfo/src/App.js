@@ -23,15 +23,15 @@ function Content({ parts }) {
 }
 
 function Total({ total }) {
-  return <p>Number of exercises {total}</p>;
+  return <b>total of exercises {total}</b>;
 }
 
-function Course({ course }) {
+function Course({ course, total }) {
   return (
     <>
       <Header course={course.name} />
       <Content parts={course.parts} />
-      {/* <Total total={total} /> */}
+      <Total total={total} />
     </>
   );
 }
@@ -52,6 +52,10 @@ function App() {
         name: 'State of a component',
         exercises: 14,
       },
+      {
+        name: 'Redux',
+        exercises: 11,
+      },
     ],
   };
 
@@ -59,7 +63,7 @@ function App() {
 
   return (
     <div>
-      <Course course={course} />
+      <Course course={course} total={total} />
     </div>
   );
 }
