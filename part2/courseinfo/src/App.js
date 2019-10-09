@@ -26,7 +26,8 @@ function Total({ total }) {
   return <b>total of exercises {total}</b>;
 }
 
-function Course({ course, total }) {
+function Course({ course }) {
+  const total = course.parts.reduce((prev, curr) => prev + curr.exercises, 0);
   return (
     <>
       <Header course={course.name} />
@@ -59,11 +60,9 @@ function App() {
     ],
   };
 
-  const total = course.parts.reduce((prev, curr) => prev + curr.exercises, 0);
-
   return (
     <div>
-      <Course course={course} total={total} />
+      <Course course={course} />
     </div>
   );
 }
