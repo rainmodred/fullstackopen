@@ -6,6 +6,10 @@ function App() {
 
   function handlePersonAdd(e) {
     e.preventDefault();
+    if (persons.some(({ name }) => name.toLowerCase() === newName.toLowerCase())) {
+      alert(`${newName} is already added to phonebook`);
+      return;
+    }
     const newPerson = {
       name: newName,
     };
