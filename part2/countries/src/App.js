@@ -15,6 +15,10 @@ function App() {
     setSearch(e.target.value);
   }
 
+  function handleCounrtySelect(name) {
+    setSearch(name);
+  }
+
   const filter = countries.filter(
     ({ name }) => name.toLowerCase().indexOf(search.toLowerCase()) > -1
   );
@@ -24,7 +28,13 @@ function App() {
       return <Country {...filter[0]} />;
     }
     if (filter.length <= 10) {
-      return filter.map(({ name }) => <p key={name}>{name}</p>);
+      return filter.map(({ name }) => {
+        return (
+          <p key={name}>
+            {name} <button onClick={() => handleCounrtySelect(name)}>show</button>
+          </p>
+        );
+      });
     }
     if (filter.length > 10) return <p>Too many matches, specify another filter</p>;
   }
