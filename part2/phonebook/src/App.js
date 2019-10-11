@@ -35,12 +35,18 @@ function App() {
         )
       ) {
         const { id } = person;
-        personsService.update(id, newPerson).then(returnedPerson => {
-          setPersons(persons.map(person => (person.id !== id ? person : returnedPerson)));
-          setMessage(`Updated ${newName}`);
-          setNewName('');
-          setNewNumber('');
-        });
+        personsService
+          .update(id, newPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => (person.id !== id ? person : returnedPerson)));
+            setMessage(`Updated ${newName}`);
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch(() => {
+            setMessage(`Information of ${newName} has already been removed from server`);
+            setPersons(persons.filter(person => person.id !== id));
+          });
       }
       return;
     }
@@ -61,8 +67,10 @@ function App() {
     if (window.confirm(`Delete ${name}`)) {
       personsService.deletePerson(id).then(() => {
         setPersons(persons.filter(person => person.id !== id));
+        setMessage(`Deleted ${name}`);
       });
     }
+    setTimeout(() => setMessage(null), 3000);
   }
 
   function handleNameChange(e) {
