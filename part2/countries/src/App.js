@@ -3,6 +3,7 @@ import axios from 'axios';
 import Country from './components/Country';
 
 function App() {
+  console.log(process.env.API_KEY);
   const [countries, setCounties] = useState([]);
   const [search, setSearch] = useState('');
   useEffect(() => {

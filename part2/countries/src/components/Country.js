@@ -1,4 +1,5 @@
 import React from 'react';
+import Weather from './Weather';
 
 export default function Country({ name, capital, population, languages, flag }) {
   return (
@@ -13,6 +14,7 @@ export default function Country({ name, capital, population, languages, flag }) 
         ))}
       </ul>
       <img style={{ width: '150px' }} src={flag} alt="" />
+      <Weather city={capital} />
     </div>
   );
 }
