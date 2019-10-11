@@ -18,14 +18,29 @@ function App() {
 
   function handlePersonAdd(e) {
     e.preventDefault();
-    if (persons.some(({ name }) => name.toLowerCase() === newName.toLowerCase())) {
-      alert(`${newName} is already added to phonebook`);
-      return;
-    }
+    const person = persons.find(({ name }) => name === newName);
+
     const newPerson = {
       name: newName,
       number: newNumber,
     };
+
+    if (person) {
+      if (
+        window.confirm(
+          `${person.name} is already added to phonebook, replace the old number with new one?`
+        )
+      ) {
+        const { id } = person;
+        personsService.update(id, newPerson).then(returnedPerson => {
+          console.log(returnedPerson);
+          setPersons(persons.map(person => (person.id !== id ? person : returnedPerson)));
+          setNewName('');
+          setNewNumber('');
+        });
+      }
+      return;
+    }
 
     personsService.create(newPerson).then(person => {
       setPersons([...persons, person]);
