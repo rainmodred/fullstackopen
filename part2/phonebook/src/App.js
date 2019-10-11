@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
+
 import personsService from './services/persons';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import Notification from './components/Norification';
 
 function App() {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personsService.getAll().then(persons => {
@@ -33,8 +36,8 @@ function App() {
       ) {
         const { id } = person;
         personsService.update(id, newPerson).then(returnedPerson => {
-          console.log(returnedPerson);
           setPersons(persons.map(person => (person.id !== id ? person : returnedPerson)));
+          setMessage(`Updated ${newName}`);
           setNewName('');
           setNewNumber('');
         });
@@ -43,10 +46,13 @@ function App() {
     }
 
     personsService.create(newPerson).then(person => {
+      setMessage(`Added ${newName}`);
       setPersons([...persons, person]);
       setNewName('');
       setNewNumber('');
     });
+
+    setTimeout(() => setMessage(null), 3000);
   }
 
   function handlePersonDelete(id) {
@@ -77,6 +83,7 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter filter={filter} onChange={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm
