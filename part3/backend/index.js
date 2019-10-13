@@ -1,4 +1,6 @@
 const app = require('express')();
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
 
 let persons = [
   {
@@ -22,6 +24,35 @@ let persons = [
     id: 4,
   },
 ];
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body;
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: 'name or number missing',
+    });
+  }
+
+  const checkPerson = persons.find(({ name }) => name.toLowerCase() === body.name.toLowerCase());
+  if (checkPerson) {
+    return response.status(409).json({
+      error: 'name must be unique',
+    });
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: Math.random()
+      .toString(36)
+      .substr(2, 9),
+  };
+
+  persons = persons.concat(person);
+
+  response.json(person);
+});
 
 app.get('/api/persons/', (request, response) => {
   response.json(persons);
