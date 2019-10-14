@@ -1,24 +1,13 @@
 const app = require('express')();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-app.use(bodyParser.json());
+const cors = require('cors');
 
+app.use(bodyParser.json());
+app.use(cors());
 morgan.token('body', req => JSON.stringify(req.body));
 app.use(morgan(`:method :url :status :res[content-length] - :response-time ms :body`));
-// app.use(
-//   morgan(function(tokens, req, res) {
-//     return [
-//       tokens.method(req, res),
-//       tokens.url(req, res),
-//       tokens.status(req, res),
-//       tokens.res(req, res, 'content-length'),
-//       '-',
-//       tokens['response-time'](req, res),
-//       'ms',
-//       tokens.type(req, res),
-//     ].join(' ');
-//   })
-// );
+
 let persons = [
   {
     name: 'Arto Hellas',
