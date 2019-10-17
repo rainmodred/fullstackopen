@@ -1,7 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
 
 const app = express();
 app.use(bodyParser.json());
@@ -9,6 +11,8 @@ app.use(cors());
 morgan.token('body', req => JSON.stringify(req.body));
 app.use(morgan(`:method :url :status :res[content-length] - :response-time ms :body`));
 app.use(express.static('build'));
+
+const Person = require('./models/person');
 
 let persons = [
   {
@@ -42,37 +46,36 @@ app.post('/api/persons', (request, response) => {
     });
   }
 
-  const checkPerson = persons.find(({ name }) => name.toLowerCase() === body.name.toLowerCase());
-  if (checkPerson) {
-    return response.status(409).json({
-      error: 'name must be unique',
-    });
-  }
+  // const checkPerson = persons.find(({ name }) => name.toLowerCase() === body.name.toLowerCase());
+  // if (checkPerson) {
+  //   return response.status(409).json({
+  //     error: 'name must be unique',
+  //   });
+  // }
 
-  const person = {
+  const person = new Person({
     name: body.name,
     number: body.number,
-    id: Math.random()
-      .toString(36)
-      .substr(2, 9),
-  };
+  });
 
-  persons = persons.concat(person);
+  person.save().then(response => {
+    console.log(response);
+  });
 
   response.json(person);
 });
 
 app.get('/api/persons/', (request, response) => {
-  response.json(persons);
+  Person.find({}).then(persons => {
+    console.log(`persons ${persons}`);
+    response.json(persons.map(person => person.toJSON()));
+  });
 });
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find(person => person.id === id);
-  if (!person) {
-    response.status(404).end();
-  }
-  response.json(person);
+  Person.findById(request.params.id).then(person => {
+    response.json(person.toJSON());
+  });
 });
 
 app.delete('/api/persons/:id', (request, response) => {
