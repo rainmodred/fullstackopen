@@ -45,6 +45,10 @@ app.post('/api/persons', (request, response) => {
     });
   }
 
+  Person.find({ name: body.name }).then(response => {
+    console.log(`find`, response);
+  });
+
   const person = new Person({
     name: body.name,
     number: body.number,
@@ -85,6 +89,22 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 app.get('/info', (request, response) => {
   response.send(`<p>Phonebook has info for ${persons.length} people</p> <p>${new Date()}</p>`);
+});
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body;
+  const id = request.params.id;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson.toJSON());
+    })
+    .catch(error => next(error));
 });
 
 const unknownEndpoint = (request, response) => {
