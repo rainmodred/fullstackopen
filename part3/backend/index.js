@@ -87,8 +87,10 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error));
 });
 
-app.get('/info', (request, response) => {
-  response.send(`<p>Phonebook has info for ${persons.length} people</p> <p>${new Date()}</p>`);
+app.get('/info', (req, res) => {
+  Person.find({}).then(persons => {
+    res.send(`Phonebook has info for ${persons.length}<br>${new Date()}`);
+  });
 });
 
 app.put('/api/persons/:id', (request, response, next) => {
