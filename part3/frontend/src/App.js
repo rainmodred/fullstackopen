@@ -51,14 +51,19 @@ function App() {
       return;
     }
 
-    personsService.create(newPerson).then(person => {
-      setMessage(`Added ${newName}`);
-      setPersons([...persons, person]);
-      setNewName('');
-      setNewNumber('');
-    });
+    personsService
+      .create(newPerson)
+      .then(person => {
+        setMessage(`Added ${newName}`);
+        setPersons([...persons, person]);
+        setNewName('');
+        setNewNumber('');
+      })
+      .catch(error => {
+        setMessage(error.response.data.error);
+      });
 
-    setTimeout(() => setMessage(null), 3000);
+    setTimeout(() => setMessage(null), 5000);
   }
 
   function handlePersonDelete(id) {
