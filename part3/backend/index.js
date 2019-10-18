@@ -33,9 +33,9 @@ app.post('/api/persons', (request, response, next) => {
 
   person
     .save()
-    .then(response => {
-      console.log(response);
-      response.json(person);
+    .then(savedPerson => savedPerson.toJSON())
+    .then(formattedPerson => {
+      response.json(formattedPerson);
     })
     .catch(error => next(error));
 });
