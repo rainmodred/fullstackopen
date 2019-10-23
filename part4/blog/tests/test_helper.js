@@ -54,7 +54,7 @@ const initialBlogs = [
   },
 ];
 
-async function blogsInDB() {
+async function blogsInDb() {
   const blogs = await Blog.find({});
   console.log(blogs);
   return blogs.map(blog => blog.toJSON());
@@ -62,5 +62,5 @@ async function blogsInDB() {
 
 module.exports = {
   initialBlogs,
-  blogsInDB,
+  blogsInDb,
 };

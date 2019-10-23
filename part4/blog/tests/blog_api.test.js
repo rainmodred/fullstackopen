@@ -47,7 +47,7 @@ describe('HTTP POST request', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const blogsAtEnd = await helper.blogsInDB();
+    const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1);
 
     const contents = blogsAtEnd.map(n => n.title);
@@ -79,6 +79,21 @@ describe('HTTP POST request', () => {
       .post('/api/blogs')
       .send(newBlog)
       .expect(400);
+  });
+});
+
+describe('deletion of a blog', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0].id;
+
+    await api.delete(`/api/blogs/${blogToDelete}`).expect(204);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length - 1);
+
+    const contents = blogsAtEnd.map(blog => blog.title);
+    expect(contents).not.toContain(blogToDelete.title);
   });
 });
 

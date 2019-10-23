@@ -28,4 +28,15 @@ blogsRouter.post('/', async (request, response, next) => {
   }
 });
 
+blogsRouter.delete('/:id', async (request, response, next) => {
+  const { id } = Number(request.params);
+
+  try {
+    await Blog.deleteOne({ id });
+    response.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = blogsRouter;
