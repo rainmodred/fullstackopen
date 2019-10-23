@@ -33,12 +33,10 @@ describe('HTTP GET request', () => {
 describe('HTTP POST request', () => {
   test('creates a new blog post', async () => {
     const newBlog = {
-      _id: '5a422a851b54a676234d17fd',
       title: 'POST test',
       author: 'Test',
       url: 'test',
       likes: 1,
-      __v: 0,
     };
 
     await api
@@ -94,6 +92,22 @@ describe('deletion of a blog', () => {
 
     const contents = blogsAtEnd.map(blog => blog.title);
     expect(contents).not.toContain(blogToDelete.title);
+  });
+});
+
+describe('update blog', () => {
+  test('succeeds blog update', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send({ likes: 15 })
+      .expect(200);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    const updatedBlog = blogsAtEnd[0];
+    expect(updatedBlog.likes).toBe(15);
   });
 });
 
