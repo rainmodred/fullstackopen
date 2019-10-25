@@ -5,15 +5,15 @@ const app = require('../app');
 const api = supertest(app);
 const helper = require('./test_helper');
 const Blog = require('../models/blog');
-
-beforeEach(async () => {
-  await Blog.deleteMany({});
-  const blogObjects = helper.initialBlogs.map(blog => new Blog(blog));
-  const promiseArray = blogObjects.map(blog => blog.save());
-  await Promise.all(promiseArray);
-});
+const User = require('../models/user');
 
 describe('HTTP GET request', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    const blogObjects = helper.initialBlogs.map(blog => new Blog(blog));
+    const promiseArray = blogObjects.map(blog => blog.save());
+    await Promise.all(promiseArray);
+  });
   test('returns the correct amount ', async () => {
     const response = await api.get('/api/blogs');
     expect(response.body.length).toBe(helper.initialBlogs.length);
@@ -31,6 +31,24 @@ describe('HTTP GET request', () => {
 });
 
 describe('HTTP POST request', () => {
+  let token;
+  beforeAll(async () => {
+    await User.deleteMany({});
+    await Blog.deleteMany({});
+    const newUser = {
+      username: 'root',
+      name: 'rootname',
+      password: 'test',
+    };
+    await api.post('/api/users').send(newUser);
+
+    const response = await api.post('/api/login').send({
+      username: 'root',
+      password: 'test',
+    });
+
+    token = response.body.token;
+  });
   test('creates a new blog post', async () => {
     const newBlog = {
       title: 'POST test',
@@ -42,11 +60,12 @@ describe('HTTP POST request', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
     const blogsAtEnd = await helper.blogsInDb();
-    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1);
+    expect(blogsAtEnd.length).toBe(1);
 
     const contents = blogsAtEnd.map(n => n.title);
 
@@ -62,6 +81,7 @@ describe('HTTP POST request', () => {
     const response = await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -81,6 +101,12 @@ describe('HTTP POST request', () => {
 });
 
 describe('deletion of a blog', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    const blogObjects = helper.initialBlogs.map(blog => new Blog(blog));
+    const promiseArray = blogObjects.map(blog => blog.save());
+    await Promise.all(promiseArray);
+  });
   test('succeeds with status code 204 if id is valid', async () => {
     const blogsAtStart = await helper.blogsInDb();
     const blogToDelete = blogsAtStart[0].id;
