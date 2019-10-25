@@ -11,6 +11,7 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response, next) => {
   const { title, url, author, likes } = request.body;
+
   if (!title || !url) {
     return response.status(400).send({ error: 'missing title or url' });
   }
@@ -42,11 +43,31 @@ blogsRouter.post('/', async (request, response, next) => {
 });
 
 blogsRouter.delete('/:id', async (request, response, next) => {
-  const { id } = Number(request.params);
+  const { id } = request.params;
+  const { token } = request;
 
   try {
-    await Blog.deleteOne({ id });
-    response.status(204).end();
+    const decodedToken = jwt.verify(token, process.env.SECRET);
+
+    if (!token || !decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' });
+    }
+
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return response.status(404).send({ error: 'blog not found' });
+    }
+    const user = await User.findById(decodedToken.id);
+    if (!user) {
+      return response.status(404).send({ error: 'user not found' });
+    }
+
+    if (user._id.toString() === blog.user.toString()) {
+      await Blog.findByIdAndDelete(id);
+      response.status(204).end();
+    } else {
+      response.status(403).send({ error: 'user does not have permission' });
+    }
   } catch (error) {
     next(error);
   }

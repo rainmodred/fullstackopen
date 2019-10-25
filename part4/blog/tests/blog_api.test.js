@@ -5,7 +5,6 @@ const app = require('../app');
 const api = supertest(app);
 const helper = require('./test_helper');
 const Blog = require('../models/blog');
-const User = require('../models/user');
 
 describe('Blog api test', () => {
   let token;
@@ -96,17 +95,52 @@ describe('Blog api test', () => {
       const promiseArray = blogObjects.map(blog => blog.save());
       await Promise.all(promiseArray);
     });
-    test('succeeds with status code 204 if id is valid', async () => {
-      const blogsAtStart = await helper.blogsInDb();
-      const blogToDelete = blogsAtStart[0].id;
+    test('succeeds if token and id is valid', async () => {
+      const blogToDelete = helper.initialBlogs[0];
 
-      await api.delete(`/api/blogs/${blogToDelete}`).expect(204);
+      await api
+        .delete(`/api/blogs/${blogToDelete._id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204);
 
       const blogsAtEnd = await helper.blogsInDb();
       expect(blogsAtEnd.length).toBe(helper.initialBlogs.length - 1);
 
       const contents = blogsAtEnd.map(blog => blog.title);
       expect(contents).not.toContain(blogToDelete.title);
+    });
+    test('fails if id invalid', async () => {
+      const blogToDelete = '5db2fbcbbfeed11444276568';
+
+      await api
+        .delete(`/api/blogs/${blogToDelete}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
+
+      const blogsAtEnd = await helper.blogsInDb();
+      expect(blogsAtEnd.length).toBe(helper.initialBlogs.length);
+    });
+    test('fails if token missing', async () => {
+      const blogToDelete = helper.initialBlogs[0];
+
+      await api.delete(`/api/blogs/${blogToDelete._id}`).expect(401);
+
+      const blogsAtEnd = await helper.blogsInDb();
+      expect(blogsAtEnd.length).toBe(helper.initialBlogs.length);
+    });
+    test('user does not have permission', async () => {
+      const blogToDelete = helper.initialBlogs[5];
+
+      await api
+        .delete(`/api/blogs/${blogToDelete._id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(403);
+
+      const blogsAtEnd = await helper.blogsInDb();
+      expect(blogsAtEnd.length).toBe(helper.initialBlogs.length);
+
+      const contents = blogsAtEnd.map(blog => blog.title);
+      expect(contents).toContain(blogToDelete.title);
     });
   });
   describe('HTTP PUT', () => {
