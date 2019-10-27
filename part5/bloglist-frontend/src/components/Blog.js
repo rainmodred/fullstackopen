@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Blog({ title, author, url, likes, user, id, onLikeClick }) {
+function Blog({ loggedUsername, title, author, url, likes, user, id, onLikeClick, onRemoveClick }) {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -22,6 +22,15 @@ function Blog({ title, author, url, likes, user, id, onLikeClick }) {
     onLikeClick(id, updatedBlog);
   }
 
+  function handleRemoveClick() {
+    const blog = {
+      title,
+      author,
+      id,
+    };
+    onRemoveClick(blog);
+  }
+
   if (toggled)
     return (
       <div style={blogStyle}>
@@ -35,6 +44,9 @@ function Blog({ title, author, url, likes, user, id, onLikeClick }) {
           {likes} likes <button onClick={handleLikeClick}>like</button>
         </div>
         <div>added by {user.name}</div>
+        <div>
+          {loggedUsername === user.username && <button onClick={handleRemoveClick}>remove</button>}{' '}
+        </div>
       </div>
     );
 

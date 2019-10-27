@@ -73,6 +73,23 @@ function App() {
     );
   }
 
+  async function handleDeleteBlog({ title, author, id }) {
+    if (window.confirm(`remove blog ${title} by ${author}`)) {
+      try {
+        await blogsService.deleteBlog(id);
+        setBlogs(blogs.filter(blog => blog.id !== id));
+        setNotification({ message: `removed blog ${title} by ${author}`, type: 'log' });
+      } catch (error) {
+        const errorMessage = error.response.data.error;
+        setNotification({ message: errorMessage, type: 'error' });
+      }
+    }
+
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  }
+
   function handleLogout() {
     window.localStorage.removeItem('loggedUser');
     setUser(null);
@@ -96,7 +113,13 @@ function App() {
         </p>
       </div>
       {blogForm()}
-      <Blogs blogs={blogs} notification={notification} onLikeClick={handleLikeClick} />
+      <Blogs
+        loggedUsername={user.username}
+        blogs={blogs}
+        notification={notification}
+        onLikeClick={handleLikeClick}
+        onRemoveClick={handleDeleteBlog}
+      />
     </div>
   );
 }

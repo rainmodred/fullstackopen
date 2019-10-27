@@ -2,7 +2,7 @@ import React from 'react';
 import Blog from './Blog';
 import Notification from './Notification';
 
-export default function Blogs({ blogs, notification, onLikeClick }) {
+export default function Blogs({ blogs, loggedUsername, notification, onLikeClick, onRemoveClick }) {
   if (blogs.length === 0) return null;
 
   return (
@@ -15,14 +15,16 @@ export default function Blogs({ blogs, notification, onLikeClick }) {
         .sort((a, b) => b.likes - a.likes)
         .map(({ title, author, id, user, url, likes }) => (
           <Blog
+            user={user}
+            loggedUsername={loggedUsername}
             id={id}
             key={id}
             title={title}
             author={author}
             likes={likes}
             url={url}
-            user={user}
             onLikeClick={onLikeClick}
+            onRemoveClick={onRemoveClick}
           />
         ))}
     </>
