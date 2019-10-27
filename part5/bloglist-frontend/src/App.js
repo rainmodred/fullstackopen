@@ -7,8 +7,6 @@ import blogsService from './services/blogs';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [blogs, setBlogs] = useState('');
 
   useEffect(() => {
@@ -29,16 +27,13 @@ function App() {
     }
   }, []);
 
-  async function handleLogin(e) {
-    e.preventDefault();
+  async function handleLogin(newUser) {
     try {
-      const user = await loginService.login({ username, password });
+      const user = await loginService.login(newUser);
 
       window.localStorage.setItem('loggedUser', JSON.stringify(user));
       blogsService.setToken(user.token);
       setUser(user);
-      setUsername('');
-      setPassword('');
     } catch (error) {
       console.log(error);
     }
@@ -55,13 +50,7 @@ function App() {
   }
 
   return user === null ? (
-    <LoginFrom
-      username={username}
-      password={password}
-      handleUsernameChange={({ target }) => setUsername(target.value)}
-      handlePasswordChange={({ target }) => setPassword(target.value)}
-      handleSubmit={handleLogin}
-    />
+    <LoginFrom handleLogin={handleLogin} />
   ) : (
     <div>
       <div>

@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-export default function LoginForm({
-  username,
-  password,
-  handleUsernameChange,
-  handlePasswordChange,
-  handleSubmit,
-}) {
+export default function LoginForm({ handleLogin }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    handleLogin({ username, password });
+    setUsername('');
+    setPassword('');
+  }
   return (
     <>
       <h2>log in to application</h2>
@@ -14,13 +17,21 @@ export default function LoginForm({
         <div>
           <label>
             username
-            <input type="text" value={username} onChange={handleUsernameChange} />
+            <input
+              type="text"
+              value={username}
+              onChange={({ target }) => setUsername(target.value)}
+            />
           </label>
         </div>
         <div>
           <label>
             passwrod
-            <input type="password" value={password} onChange={handlePasswordChange} />
+            <input
+              type="password"
+              value={password}
+              onChange={({ target }) => setPassword(target.value)}
+            />
           </label>
         </div>
         <button type="submit">login</button>
