@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 function Blog({ title, author, url, likes, user, id, onLikeClick }) {
-  const [toggled, setToggled] = useState(false);
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -9,6 +8,8 @@ function Blog({ title, author, url, likes, user, id, onLikeClick }) {
     borderWidth: 1,
     marginBottom: 5,
   };
+
+  const [toggled, setToggled] = useState(false);
 
   function handleLikeClick() {
     const updatedBlog = {
