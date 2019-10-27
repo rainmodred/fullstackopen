@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 function Blog({ loggedUsername, title, author, url, likes, user, id, onLikeClick, onRemoveClick }) {
   const blogStyle = {
@@ -58,5 +59,17 @@ function Blog({ loggedUsername, title, author, url, likes, user, id, onLikeClick
     </div>
   );
 }
+
+Blog.propTypes = {
+  loggedUsername: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  likes: PropTypes.number.isRequired,
+  user: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired,
+  onLikeClick: PropTypes.func.isRequired,
+  onRemoveClick: PropTypes.func.isRequired,
+};
 
 export default Blog;
