@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LoginFrom from './components/LoginFrom';
 import Blogs from './components/Blogs';
 import CreateBlogForm from './components/CreateBlogFrom';
+import Togglable from './components/Togglable';
 import loginService from './services/login';
 import blogsService from './services/blogs';
 
@@ -9,6 +10,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [notification, setNotification] = useState(null);
+  const blogFormRef = React.createRef();
 
   useEffect(() => {
     async function getBlogs() {
@@ -44,6 +46,7 @@ function App() {
   }
 
   async function handleCreateBlog(newBlog) {
+    blogFormRef.current.toggleVisibility();
     const returnedBlog = await blogsService.create(newBlog);
     setBlogs([...blogs, returnedBlog]);
     setNotification({
@@ -60,6 +63,14 @@ function App() {
     setUser(null);
   }
 
+  function blogForm() {
+    return (
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <CreateBlogForm handleCreateBlog={handleCreateBlog} />
+      </Togglable>
+    );
+  }
+
   return user === null ? (
     <LoginFrom handleLogin={handleLogin} notification={notification} />
   ) : (
@@ -69,7 +80,7 @@ function App() {
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
       </div>
-      <CreateBlogForm handleCreateBlog={handleCreateBlog} />
+      {blogForm()}
       <Blogs blogs={blogs} notification={notification} />
     </div>
   );
