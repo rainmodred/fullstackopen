@@ -7,14 +7,14 @@ import blogsService from './services/blogs';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [blogs, setBlogs] = useState('');
+  const [blogs, setBlogs] = useState([]);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     async function getBlogs() {
       const blogs = await blogsService.getAll();
       setBlogs(blogs);
     }
-
     getBlogs();
   }, [user]);
 
@@ -35,13 +35,24 @@ function App() {
       blogsService.setToken(user.token);
       setUser(user);
     } catch (error) {
-      console.log(error);
+      const errorMessage = error.response.data.error;
+      setNotification({ message: errorMessage, type: 'error' });
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
     }
   }
 
   async function handleCreateBlog(newBlog) {
     const returnedBlog = await blogsService.create(newBlog);
     setBlogs([...blogs, returnedBlog]);
+    setNotification({
+      message: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+      type: 'log',
+    });
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
   }
 
   function handleLogout() {
@@ -50,7 +61,7 @@ function App() {
   }
 
   return user === null ? (
-    <LoginFrom handleLogin={handleLogin} />
+    <LoginFrom handleLogin={handleLogin} notification={notification} />
   ) : (
     <div>
       <div>
@@ -59,7 +70,7 @@ function App() {
         </p>
       </div>
       <CreateBlogForm handleCreateBlog={handleCreateBlog} />
-      <Blogs blogs={blogs} />
+      <Blogs blogs={blogs} notification={notification} />
     </div>
   );
 }

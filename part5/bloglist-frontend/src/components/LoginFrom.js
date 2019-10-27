@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import Notification from './Notification';
 
-export default function LoginForm({ handleLogin }) {
+export default function LoginForm({ handleLogin, notification }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,6 +14,9 @@ export default function LoginForm({ handleLogin }) {
   return (
     <>
       <h2>log in to application</h2>
+      {notification !== null && (
+        <Notification message={notification.message} type={notification.type} />
+      )}
       <form onSubmit={handleSubmit}>
         <div>
           <label>
