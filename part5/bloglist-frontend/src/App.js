@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LoginFrom from './components/LoginFrom';
 import Blogs from './components/Blogs';
+import CreateBlogForm from './components/CreateBlogFrom';
 import loginService from './services/login';
 import blogsService from './services/blogs';
 
@@ -24,6 +25,7 @@ function App() {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
+      blogsService.setToken(user.token);
     }
   }, []);
 
@@ -33,6 +35,7 @@ function App() {
       const user = await loginService.login({ username, password });
 
       window.localStorage.setItem('loggedUser', JSON.stringify(user));
+      blogsService.setToken(user.token);
       setUser(user);
       setUsername('');
       setPassword('');
@@ -41,10 +44,16 @@ function App() {
     }
   }
 
+  async function handleCreateBlog(newBlog) {
+    const returnedBlog = await blogsService.create(newBlog);
+    setBlogs([...blogs, returnedBlog]);
+  }
+
   function handleLogout() {
     window.localStorage.removeItem('loggedUser');
     setUser(null);
   }
+
   return user === null ? (
     <LoginFrom
       username={username}
@@ -59,7 +68,8 @@ function App() {
         <p>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
-      </div>{' '}
+      </div>
+      <CreateBlogForm handleCreateBlog={handleCreateBlog} />
       <Blogs blogs={blogs} />
     </div>
   );

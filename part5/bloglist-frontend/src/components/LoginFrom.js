@@ -12,13 +12,13 @@ export default function LoginForm({
       <h2>log in to application</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="">
+          <label>
             username
             <input type="text" value={username} onChange={handleUsernameChange} />
           </label>
         </div>
         <div>
-          <label htmlFor="">
+          <label>
             passwrod
             <input type="password" value={password} onChange={handlePasswordChange} />
           </label>
