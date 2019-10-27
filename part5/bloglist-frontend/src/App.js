@@ -1,21 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import LoginFrom from './components/LoginFrom';
+import Blogs from './components/Blogs';
+import loginService from './services/login';
+import blogsService from './services/blogs';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const [user, setUser] = useState(null);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [blogs, setBlogs] = useState('');
+
+  useEffect(() => {
+    async function getBlogs() {
+      const blogs = await blogsService.getAll();
+      setBlogs(blogs);
+    }
+
+    getBlogs();
+  }, [user]);
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    try {
+      const user = await loginService.login({ username, password });
+
+      console.log(user);
+      setUser(user);
+      setUsername('');
+      setPassword('');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return user === null ? (
+    <LoginFrom
+      username={username}
+      password={password}
+      handleUsernameChange={({ target }) => setUsername(target.value)}
+      handlePasswordChange={({ target }) => setPassword(target.value)}
+      handleSubmit={handleLogin}
+    />
+  ) : (
+    <div>
+      <p>{user.name} logged in</p> <Blogs blogs={blogs} />
     </div>
   );
 }
