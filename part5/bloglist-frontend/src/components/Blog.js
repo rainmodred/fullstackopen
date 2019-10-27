@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-function Blog({ title, author, url, likes, user }) {
-  console.log({ title, author, url, likes, user });
+function Blog({ title, author, url, likes, user, id, onLikeClick }) {
   const [toggled, setToggled] = useState(false);
   const blogStyle = {
     paddingTop: 10,
@@ -10,6 +9,17 @@ function Blog({ title, author, url, likes, user }) {
     borderWidth: 1,
     marginBottom: 5,
   };
+
+  function handleLikeClick() {
+    const updatedBlog = {
+      title,
+      author,
+      url,
+      user: user.id,
+      likes: likes + 1,
+    };
+    onLikeClick(id, updatedBlog);
+  }
 
   if (toggled)
     return (
@@ -21,7 +31,7 @@ function Blog({ title, author, url, likes, user }) {
           <a href={url}> {url}</a>
         </div>
         <div>
-          {likes} likes <button>like</button>
+          {likes} likes <button onClick={handleLikeClick}>like</button>
         </div>
         <div>added by {user.name}</div>
       </div>

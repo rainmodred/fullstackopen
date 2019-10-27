@@ -58,6 +58,21 @@ function App() {
     }, 5000);
   }
 
+  async function handleLikeClick(id, newBlog) {
+    const updatedBlog = await blogsService.update(id, newBlog);
+    setBlogs(
+      blogs.map(blog => {
+        if (blog.id === updatedBlog.id) {
+          return {
+            ...blog,
+            likes: updatedBlog.likes,
+          };
+        }
+        return blog;
+      }),
+    );
+  }
+
   function handleLogout() {
     window.localStorage.removeItem('loggedUser');
     setUser(null);
@@ -81,7 +96,7 @@ function App() {
         </p>
       </div>
       {blogForm()}
-      <Blogs blogs={blogs} notification={notification} />
+      <Blogs blogs={blogs} notification={notification} onLikeClick={handleLikeClick} />
     </div>
   );
 }
