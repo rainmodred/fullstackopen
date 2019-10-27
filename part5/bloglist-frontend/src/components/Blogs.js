@@ -11,18 +11,20 @@ export default function Blogs({ blogs, notification, onLikeClick }) {
       {notification !== null && (
         <Notification message={notification.message} type={notification.type} />
       )}
-      {blogs.map(({ title, author, id, user, url, likes }) => (
-        <Blog
-          id={id}
-          key={id}
-          title={title}
-          author={author}
-          likes={likes}
-          url={url}
-          user={user}
-          onLikeClick={onLikeClick}
-        />
-      ))}
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map(({ title, author, id, user, url, likes }) => (
+          <Blog
+            id={id}
+            key={id}
+            title={title}
+            author={author}
+            likes={likes}
+            url={url}
+            user={user}
+            onLikeClick={onLikeClick}
+          />
+        ))}
     </>
   );
 }
