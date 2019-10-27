@@ -19,18 +19,31 @@ function App() {
     getBlogs();
   }, [user]);
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser');
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+    }
+  }, []);
+
   async function handleLogin(e) {
     e.preventDefault();
     try {
       const user = await loginService.login({ username, password });
 
-      console.log(user);
+      window.localStorage.setItem('loggedUser', JSON.stringify(user));
       setUser(user);
       setUsername('');
       setPassword('');
     } catch (error) {
       console.log(error);
     }
+  }
+
+  function handleLogout() {
+    window.localStorage.removeItem('loggedUser');
+    setUser(null);
   }
   return user === null ? (
     <LoginFrom
@@ -42,7 +55,12 @@ function App() {
     />
   ) : (
     <div>
-      <p>{user.name} logged in</p> <Blogs blogs={blogs} />
+      <div>
+        <p>
+          {user.name} logged in <button onClick={handleLogout}>logout</button>
+        </p>
+      </div>{' '}
+      <Blogs blogs={blogs} />
     </div>
   );
 }
