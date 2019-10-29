@@ -13,16 +13,11 @@ export default function Blogs({ blogs, loggedUsername, notification, onLikeClick
       )}
       {blogs
         .sort((a, b) => b.likes - a.likes)
-        .map(({ title, author, id, user, url, likes }) => (
+        .map(blog => (
           <Blog
-            user={user}
+            blog={blog}
             loggedUsername={loggedUsername}
-            id={id}
-            key={id}
-            title={title}
-            author={author}
-            likes={likes}
-            url={url}
+            key={blog.id}
             onLikeClick={onLikeClick}
             onRemoveClick={onRemoveClick}
           />

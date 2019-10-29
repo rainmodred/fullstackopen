@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-function Blog({ loggedUsername, title, author, url, likes, user, id, onLikeClick, onRemoveClick }) {
+function Blog(props, { loggedUsername, onLikeClick, onRemoveClick }) {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -10,6 +10,7 @@ function Blog({ loggedUsername, title, author, url, likes, user, id, onLikeClick
     marginBottom: 5,
   };
 
+  const { title, author, url, likes, user, id } = props.blog;
   const [toggled, setToggled] = useState(false);
 
   function handleLikeClick() {
@@ -35,7 +36,7 @@ function Blog({ loggedUsername, title, author, url, likes, user, id, onLikeClick
   if (toggled)
     return (
       <div style={blogStyle}>
-        <div onClick={() => setToggled(!toggled)}>
+        <div className="blog-title" onClick={() => setToggled(!toggled)}>
           {title} {author}
         </div>
         <div>
@@ -53,7 +54,7 @@ function Blog({ loggedUsername, title, author, url, likes, user, id, onLikeClick
 
   return (
     <div style={blogStyle}>
-      <div onClick={() => setToggled(!toggled)}>
+      <div className="blog-title" onClick={() => setToggled(!toggled)}>
         {title} {author}
       </div>
     </div>
@@ -61,13 +62,15 @@ function Blog({ loggedUsername, title, author, url, likes, user, id, onLikeClick
 }
 
 Blog.propTypes = {
+  blog: PropTypes.shape({
+    title: PropTypes.string,
+    auhtor: PropTypes.string,
+    id: PropTypes.string,
+    url: PropTypes.string,
+    user: PropTypes.object,
+    likes: PropTypes.number,
+  }),
   loggedUsername: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
-  likes: PropTypes.number.isRequired,
-  user: PropTypes.object.isRequired,
-  id: PropTypes.string.isRequired,
   onLikeClick: PropTypes.func.isRequired,
   onRemoveClick: PropTypes.func.isRequired,
 };
