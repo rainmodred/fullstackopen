@@ -3,7 +3,7 @@ import Blog from './Blog';
 import Notification from './Notification';
 
 export default function Blogs({ blogs, loggedUsername, notification, onLikeClick, onRemoveClick }) {
-  if (blogs.length === 0) return null;
+  if (!blogs || blogs.length === 0) return null;
 
   return (
     <>
