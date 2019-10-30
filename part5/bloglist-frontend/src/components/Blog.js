@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-function Blog(props, { loggedUsername, onLikeClick, onRemoveClick }) {
-  const { title, author, url, likes, user, id } = props.blog;
+function Blog({ blog, loggedUsername, onLikeClick, onRemoveClick }) {
+  const { title, author, url, likes, user, id } = blog;
   const [toggled, setToggled] = useState(false);
 
   function handleLikeClick() {
