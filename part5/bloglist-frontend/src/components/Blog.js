@@ -2,14 +2,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 function Blog(props, { loggedUsername, onLikeClick, onRemoveClick }) {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
   const { title, author, url, likes, user, id } = props.blog;
   const [toggled, setToggled] = useState(false);
 
@@ -35,7 +27,7 @@ function Blog(props, { loggedUsername, onLikeClick, onRemoveClick }) {
 
   if (toggled)
     return (
-      <div style={blogStyle}>
+      <div className="blog">
         <div className="blog-title" onClick={() => setToggled(!toggled)}>
           {title} {author}
         </div>
@@ -53,7 +45,7 @@ function Blog(props, { loggedUsername, onLikeClick, onRemoveClick }) {
     );
 
   return (
-    <div style={blogStyle}>
+    <div className="blog">
       <div className="blog-title" onClick={() => setToggled(!toggled)}>
         {title} {author}
       </div>
