@@ -1,33 +1,34 @@
 import React from 'react';
+import { incVote } from './reducers/anecdoteReducer';
 
-const App = (props) => {
-  const anecdotes = props.store.getState()
+const App = props => {
+  const anecdotes = props.store.getState();
 
-  const vote = (id) => {
-    console.log('vote', id)
-  }
+  const vote = id => {
+    props.store.dispatch(incVote(id));
+  };
 
   return (
     <div>
       <h2>Anecdotes</h2>
-      {anecdotes.map(anecdote =>
+      {anecdotes.map(anecdote => (
         <div key={anecdote.id}>
-          <div>
-            {anecdote.content}
-          </div>
+          <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
             <button onClick={() => vote(anecdote.id)}>vote</button>
           </div>
         </div>
-      )}
+      ))}
       <h2>create new</h2>
       <form>
-        <div><input /></div>
+        <div>
+          <input />
+        </div>
         <button>create</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
