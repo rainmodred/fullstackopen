@@ -7,14 +7,6 @@
     {
       "content": "best feature ever <3",
       "id": 2
-    },
-    {
-      "content": "assdasdd",
-      "id": 3
-    },
-    {
-      "content": "assdasddsdf",
-      "id": 4
     }
   ],
   "persons": [
@@ -22,21 +14,6 @@
       "name": "mluukkai",
       "number": "040-5483923",
       "id": 1
-    },
-    {
-      "name": "AAAA",
-      "number": "123456789",
-      "id": 2
-    },
-    {
-      "name": "AAAAA",
-      "number": "987654321",
-      "id": 3
-    },
-    {
-      "name": "AAAAAAAAA",
-      "number": "dddddddd",
-      "id": 4
-    }
+    }    
   ]
 }
