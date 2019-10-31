@@ -58,4 +58,16 @@ describe('unicafe reducer', () => {
       bad: 1,
     });
   });
+  test('ZERO is reset state', () => {
+    const action = {
+      type: 'ZERO',
+    };
+
+    const newState = counterReducer(state, action);
+    expect(newState).toEqual({
+      good: 0,
+      ok: 0,
+      bad: 0,
+    });
+  });
 });
