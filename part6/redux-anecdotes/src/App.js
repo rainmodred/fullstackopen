@@ -8,10 +8,10 @@ const App = ({ store }) => {
   return (
     <div>
       <h2>Anecdotes</h2>
-      <Filter store={store} />
-      <Notification store={store} />
-      <AnecdoteForm store={store} />
-      <AnecdoteList store={store} />
+      <Filter />
+      <Notification />
+      <AnecdoteForm />
+      <AnecdoteList />
     </div>
   );
 };

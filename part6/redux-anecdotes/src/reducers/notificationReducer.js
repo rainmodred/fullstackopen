@@ -1,11 +1,7 @@
-const initialState = {
-  message: '',
-};
-
-const reducer = (state = initialState, action) => {
+const reducer = (state = '', action) => {
   switch (action.type) {
     case 'SHOW_NOTIFICATION':
-      return { message: action.message };
+      return action.message;
     default:
       return state;
   }
