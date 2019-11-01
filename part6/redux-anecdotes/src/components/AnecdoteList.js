@@ -5,7 +5,8 @@ import { showNotification } from '../reducers/notificationReducer';
 
 const AnecdoteList = ({ visibleAnecdotes, incVote, showNotification }) => {
   const vote = id => {
-    incVote(id);
+    const anecdote = visibleAnecdotes.find(anecdote => anecdote.id === id);
+    incVote(id, anecdote);
     showNotification(
       `you voted '${visibleAnecdotes.find(anecdote => anecdote.id === id).content}'`,
     );
