@@ -9,10 +9,7 @@ const AnecdoteForm = ({ createAnecdote, showNotification }) => {
     const content = e.target.anecdote.value;
     e.target.anecdote.value = '';
     createAnecdote(content);
-    showNotification(`created ${content}`);
-    setTimeout(() => {
-      showNotification(``);
-    }, 5000);
+    showNotification(`created ${content}`, 5);
   };
 
   return (

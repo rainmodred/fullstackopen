@@ -9,10 +9,8 @@ const AnecdoteList = ({ visibleAnecdotes, incVote, showNotification }) => {
     incVote(id, anecdote);
     showNotification(
       `you voted '${visibleAnecdotes.find(anecdote => anecdote.id === id).content}'`,
+      5,
     );
-    setTimeout(() => {
-      showNotification(``);
-    }, 5000);
   };
 
   return visibleAnecdotes
