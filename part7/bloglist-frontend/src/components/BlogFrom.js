@@ -1,18 +1,41 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { useField } from '../hooks/index';
+import { createBlog } from '../reducers/blogReducer';
+import { setNotification } from '../reducers/notificationReducer';
 
-export default function BlogForm({ handleCreateBlog }) {
+function BlogForm({ createBlog, setNotification, toggleVisibility }) {
   const title = useField('text');
   const author = useField('text');
   const url = useField('text');
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    handleCreateBlog({
-      title: title.props.value,
-      author: author.props.value,
-      url: url.props.value,
-    });
+    toggleVisibility();
+    try {
+      createBlog({
+        title: title.props.value,
+        author: author.props.value,
+        url: url.props.value,
+      });
+      setNotification(
+        {
+          message: `a new blog ${title.props.value} by ${author.props.value} added`,
+          type: 'log',
+        },
+        5,
+      );
+    } catch (error) {
+      const errorMessage = error.response.data.error;
+      setNotification(
+        {
+          message: errorMessage,
+          type: 'error',
+        },
+        5,
+      );
+    }
+
     title.reset();
     author.reset();
     url.reset();
@@ -43,3 +66,19 @@ export default function BlogForm({ handleCreateBlog }) {
     </form>
   );
 }
+
+function mapStateToProps(state) {
+  return {
+    blogs: state.blogs,
+  };
+}
+
+const mapDispatchToProps = {
+  createBlog,
+  setNotification,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(BlogForm);

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { updateLikes, deleteBlog } from '../reducers/blogReducer';
+import { setNotification } from '../reducers/notificationReducer';
 
-function Blog({ blog, loggedUsername, onLikeClick, onRemoveClick }) {
+function Blog({ blog, creator, updateLikes, deleteBlog, setNotification }) {
   const { title, author, url, likes, user, id } = blog;
   const [toggled, setToggled] = useState(false);
 
@@ -10,19 +13,23 @@ function Blog({ blog, loggedUsername, onLikeClick, onRemoveClick }) {
       title,
       author,
       url,
+      id,
       user: user.id,
       likes: likes + 1,
     };
-    onLikeClick(id, updatedBlog);
+    updateLikes(updatedBlog);
   }
 
   function handleRemoveClick() {
-    const blog = {
-      title,
-      author,
-      id,
-    };
-    onRemoveClick(blog);
+    if (window.confirm(`remove blog ${title} by ${author}`)) {
+      try {
+        deleteBlog(id);
+        setNotification({ message: `removed blog ${title} by ${author}`, type: 'log' }, 5);
+      } catch (error) {
+        const errorMessage = error.response.data.error;
+        setNotification({ message: errorMessage, type: 'error' }, 5);
+      }
+    }
   }
 
   if (toggled)
@@ -38,9 +45,7 @@ function Blog({ blog, loggedUsername, onLikeClick, onRemoveClick }) {
           {likes} likes <button onClick={handleLikeClick}>like</button>
         </div>
         <div>added by {user.name}</div>
-        <div>
-          {loggedUsername === user.username && <button onClick={handleRemoveClick}>remove</button>}{' '}
-        </div>
+        <div>{creator && <button onClick={handleRemoveClick}>remove</button>} </div>
       </div>
     );
 
@@ -53,6 +58,17 @@ function Blog({ blog, loggedUsername, onLikeClick, onRemoveClick }) {
   );
 }
 
+const mapDispatchToProps = {
+  updateLikes,
+  deleteBlog,
+  setNotification,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Blog);
+
 Blog.propTypes = {
   blog: PropTypes.shape({
     title: PropTypes.string,
@@ -62,9 +78,7 @@ Blog.propTypes = {
     user: PropTypes.object,
     likes: PropTypes.number,
   }),
-  loggedUsername: PropTypes.string.isRequired,
-  onLikeClick: PropTypes.func.isRequired,
-  onRemoveClick: PropTypes.func.isRequired,
+  updateLikes: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
+  setNotification: PropTypes.func.isRequired,
 };
-
-export default Blog;
