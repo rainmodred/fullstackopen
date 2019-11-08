@@ -9,7 +9,7 @@ const initialState = {
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGOUT = 'LOGOUT';
 const LOGIN_ERROR = 'LOGIN_ERROR ';
-const SET_USER = 'SET_USER';
+const GET_LOCAL_TOKEN = 'GET_LOCAL_TOKEN';
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -17,7 +17,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, token: action.user, error: null };
     case LOGOUT:
       return initialState;
-    case SET_USER:
+    case GET_LOCAL_TOKEN:
       return { ...state, token: action.user, error: null };
     case LOGIN_ERROR:
       return { ...state, token: null, error: action.error };
@@ -49,7 +49,7 @@ export function setUser() {
       const user = JSON.parse(loggedUserJSON);
       blogService.setToken(user.token);
       dispatch({
-        type: SET_USER,
+        type: GET_LOCAL_TOKEN,
         user,
       });
     }

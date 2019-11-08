@@ -1,4 +1,4 @@
-import blogsService from '../services/blogs';
+import blogService from '../services/blogs';
 
 const INIT_BLOGS = 'INIT_BLOGS';
 const CREATE_BLOG = 'CREATE_BLOG';
@@ -28,7 +28,7 @@ export default function reducer(state = initialState, action) {
 
 export function initBlogs() {
   return async dispatch => {
-    const data = await blogsService.getAll();
+    const data = await blogService.getAll();
     dispatch({
       type: INIT_BLOGS,
       data,
@@ -39,7 +39,7 @@ export function initBlogs() {
 export function createBlog(newBlog) {
   return async dispatch => {
     try {
-      const data = await blogsService.create(newBlog);
+      const data = await blogService.create(newBlog);
       dispatch({
         type: CREATE_BLOG,
         data,
@@ -53,7 +53,7 @@ export function createBlog(newBlog) {
 export function updateLikes(newBlog) {
   return async dispatch => {
     try {
-      const data = await blogsService.update(newBlog);
+      const data = await blogService.update(newBlog);
       dispatch({
         type: UPDATE_BLOG_LIKES,
         data,
@@ -66,7 +66,7 @@ export function updateLikes(newBlog) {
 
 export function deleteBlog(id) {
   return async dispatch => {
-    await blogsService.deleteBlog(id);
+    await blogService.deleteBlog(id);
     dispatch({
       type: DELETE_BLOG,
       id,

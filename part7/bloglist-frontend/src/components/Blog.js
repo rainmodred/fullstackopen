@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { updateLikes, deleteBlog } from '../reducers/blogReducer';
 import { setNotification } from '../reducers/notificationReducer';
 
-function Blog({ blog, creator, updateLikes, deleteBlog, setNotification }) {
+function Blog(props) {
+  console.log(props);
+  const { blog, creator, updateLikes, deleteBlog, setNotification } = props;
+  if (!blog) return null;
   const { title, author, url, likes, user, id } = blog;
-  const [toggled, setToggled] = useState(false);
 
   function handleLikeClick() {
     const updatedBlog = {
@@ -32,28 +34,17 @@ function Blog({ blog, creator, updateLikes, deleteBlog, setNotification }) {
     }
   }
 
-  if (toggled)
-    return (
-      <div className="blog">
-        <div className="blog-title" onClick={() => setToggled(!toggled)}>
-          {title} {author}
-        </div>
-        <div>
-          <a href={url}> {url}</a>
-        </div>
-        <div>
-          {likes} likes <button onClick={handleLikeClick}>like</button>
-        </div>
-        <div>added by {user.name}</div>
-        <div>{creator && <button onClick={handleRemoveClick}>remove</button>} </div>
-      </div>
-    );
-
   return (
-    <div className="blog">
-      <div className="blog-title" onClick={() => setToggled(!toggled)}>
-        {title} {author}
+    <div>
+      <h2>{title}</h2>
+      <div>
+        <a href={url}> {url}</a>
       </div>
+      <div>
+        {likes} likes <button onClick={handleLikeClick}>like</button>
+      </div>
+      <div>added by {user.username}</div>
+      <div>{creator === user.username && <button onClick={handleRemoveClick}>remove</button>} </div>
     </div>
   );
 }
