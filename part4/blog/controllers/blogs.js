@@ -3,9 +3,12 @@ const jwt = require('jsonwebtoken');
 
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const Comment = require('../models/comment');
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+  const blogs = await Blog.find({})
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments', { content: 1 });
   response.json(blogs.map(blog => blog.toJSON()));
 });
 
@@ -30,13 +33,35 @@ blogsRouter.post('/', async (request, response, next) => {
       author,
       url,
       likes: likes || 0,
-      user
+      user,
     });
 
     const savedBlog = await blog.save();
     user.blogs = [...user.blogs, savedBlog._id];
     await user.save();
     response.status(201).json(savedBlog.toJSON());
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogsRouter.post('/:id/comments/', async (request, response, next) => {
+  const { content } = request.body;
+  const { id } = request.params;
+  if (!content) {
+    return response.status(400).send({ error: 'missing comment text' });
+  }
+  try {
+    const blog = await Blog.findOne({ _id: id });
+    console.log(`blog`, blog);
+    const comment = new Comment({
+      content,
+    });
+    const savedComment = await comment.save();
+    console.log(`savedComment`, savedComment);
+    blog.comments = [...blog.comments, savedComment];
+    await blog.save();
+    response.status(201).json(savedComment.toJSON());
   } catch (error) {
     next(error);
   }
