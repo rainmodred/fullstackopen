@@ -53,12 +53,12 @@ blogsRouter.post('/:id/comments/', async (request, response, next) => {
   }
   try {
     const blog = await Blog.findOne({ _id: id });
-    console.log(`blog`, blog);
+
     const comment = new Comment({
       content,
     });
     const savedComment = await comment.save();
-    console.log(`savedComment`, savedComment);
+
     blog.comments = [...blog.comments, savedComment];
     await blog.save();
     response.status(201).json(savedComment.toJSON());
