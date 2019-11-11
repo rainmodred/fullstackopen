@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Menu from './components/Menu';
 import LoginFrom from './components/LoginFrom';
 import Blogs from './components/Blogs';
@@ -45,14 +45,12 @@ function App({ user, users, blogs, initBlogs, initUsers, setUser, logout }) {
   const userById = id => users.find(user => user.id === id);
   const blogById = id => blogs.find(blog => blog.id === id);
 
-  console.log(blogById(`5db34f7ff3e3c42aec3b310b`));
   return user.token === null ? (
     <LoginFrom />
   ) : (
     <div>
       <div></div>
       <Router>
-        {/* <Switch> */}
         <Menu />
         <p>
           {user.token.name} logged in <button onClick={logout}>logout</button>
@@ -65,7 +63,7 @@ function App({ user, users, blogs, initBlogs, initUsers, setUser, logout }) {
             return (
               <>
                 {blogForm()}
-                <Blogs />;
+                <Blogs />
               </>
             );
           }}
@@ -81,12 +79,7 @@ function App({ user, users, blogs, initBlogs, initUsers, setUser, logout }) {
             <Blog blog={blogById(match.params.id)} creator={user.token.username} />
           )}
         />
-
-        {/* </Switch> */}
       </Router>
-
-      {/* {blogForm()}
-      <Blogs /> */}
     </div>
   );
 }

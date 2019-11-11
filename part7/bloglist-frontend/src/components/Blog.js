@@ -1,12 +1,12 @@
 import React from 'react';
+import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { updateLikes, deleteBlog } from '../reducers/blogReducer';
+import { updateLikes, deleteBlog, addComment } from '../reducers/blogReducer';
 import { setNotification } from '../reducers/notificationReducer';
+import Comments from './Comments';
 
-function Blog(props) {
-  console.log(props);
-  const { blog, creator, updateLikes, deleteBlog, setNotification } = props;
+function Blog({ blog, creator, updateLikes, deleteBlog, setNotification, addComment, history }) {
   if (!blog) return null;
   const { title, author, url, likes, user, id } = blog;
 
@@ -24,6 +24,7 @@ function Blog(props) {
 
   function handleRemoveClick() {
     if (window.confirm(`remove blog ${title} by ${author}`)) {
+      history.push('/');
       try {
         deleteBlog(id);
         setNotification({ message: `removed blog ${title} by ${author}`, type: 'log' }, 5);
@@ -32,6 +33,10 @@ function Blog(props) {
         setNotification({ message: errorMessage, type: 'error' }, 5);
       }
     }
+  }
+
+  function handleAddComment(newComment) {
+    addComment(id, newComment);
   }
 
   return (
@@ -45,6 +50,7 @@ function Blog(props) {
       </div>
       <div>added by {user.username}</div>
       <div>{creator === user.username && <button onClick={handleRemoveClick}>remove</button>} </div>
+      <Comments comments={blog.comments} handleAddComment={handleAddComment} />
     </div>
   );
 }
@@ -53,12 +59,15 @@ const mapDispatchToProps = {
   updateLikes,
   deleteBlog,
   setNotification,
+  addComment,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(Blog);
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps,
+  )(Blog),
+);
 
 Blog.propTypes = {
   blog: PropTypes.shape({

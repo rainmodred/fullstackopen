@@ -4,6 +4,7 @@ const INIT_BLOGS = 'INIT_BLOGS';
 const CREATE_BLOG = 'CREATE_BLOG';
 const UPDATE_BLOG_LIKES = 'UPDATE_BLOG_LIKES';
 const DELETE_BLOG = 'DELETE_BLOG';
+const ADD_COMMENT = 'ADD_COMMENT';
 
 const initialState = [];
 
@@ -21,6 +22,10 @@ export default function reducer(state = initialState, action) {
         .sort(byLikes);
     case DELETE_BLOG:
       return state.filter(blog => blog.id !== action.id && blog);
+    case ADD_COMMENT:
+      return state.map(blog =>
+        blog.id !== action.id ? blog : { ...blog, comments: [...blog.comments, action.data] },
+      );
     default:
       return state;
   }
@@ -69,6 +74,17 @@ export function deleteBlog(id) {
     await blogService.deleteBlog(id);
     dispatch({
       type: DELETE_BLOG,
+      id,
+    });
+  };
+}
+
+export function addComment(id, newComment) {
+  return async dipsatch => {
+    const data = await blogService.addComment(id, newComment);
+    dipsatch({
+      type: ADD_COMMENT,
+      data,
       id,
     });
   };
