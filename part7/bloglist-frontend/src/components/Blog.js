@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Item, Button, Icon, Label } from 'semantic-ui-react';
 import { updateLikes, deleteBlog, addComment } from '../reducers/blogReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import Comments from './Comments';
@@ -27,10 +28,10 @@ function Blog({ blog, creator, updateLikes, deleteBlog, setNotification, addComm
       history.push('/');
       try {
         deleteBlog(id);
-        setNotification({ message: `removed blog ${title} by ${author}`, type: 'log' }, 5);
+        setNotification({ message: `removed blog ${title} by ${author}`, type: 'positive' }, 5);
       } catch (error) {
         const errorMessage = error.response.data.error;
-        setNotification({ message: errorMessage, type: 'error' }, 5);
+        setNotification({ message: errorMessage, type: 'negative' }, 5);
       }
     }
   }
@@ -40,18 +41,33 @@ function Blog({ blog, creator, updateLikes, deleteBlog, setNotification, addComm
   }
 
   return (
-    <div>
-      <h2>{title}</h2>
-      <div>
-        <a href={url}> {url}</a>
-      </div>
-      <div>
-        {likes} likes <button onClick={handleLikeClick}>like</button>
-      </div>
-      <div>added by {user.username}</div>
-      <div>{creator === user.username && <button onClick={handleRemoveClick}>remove</button>} </div>
+    <Item>
+      <Item.Header as="h3">{title}</Item.Header>
+      <Item.Description>added by {user.username}</Item.Description>
+      <Item.Content as="a" href={url}>
+        {url}
+      </Item.Content>
+
+      <Item.Meta>
+        <Button as="div" labelPosition="left">
+          <Label as="span" basic pointing="right">
+            {likes}
+          </Label>
+          <Button icon onClick={handleLikeClick}>
+            <Icon name="heart" />
+            Like
+          </Button>
+        </Button>
+      </Item.Meta>
+      <Item.Description style={{ marginTop: '10px' }}>
+        {creator === user.username && (
+          <Button color="red" onClick={handleRemoveClick}>
+            remove
+          </Button>
+        )}
+      </Item.Description>
       <Comments comments={blog.comments} handleAddComment={handleAddComment} />
-    </div>
+    </Item>
   );
 }
 

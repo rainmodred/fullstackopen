@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Form, Button, Header } from 'semantic-ui-react';
 import Notification from './Notification';
 import { useField } from '../hooks/index';
 import { login } from '../reducers/loginReducer';
 import { setNotification } from '../reducers/notificationReducer';
 
 function LoginForm({ user, login, setNotification }) {
-  const username = useField('text');
-  const password = useField('password');
+  const username = useField('text', 'username');
+  const password = useField('password', 'password');
 
   useEffect(() => {
     if (user.error) {
-      setNotification({ message: user.error, type: 'error' }, 5);
+      setNotification({ message: user.error, type: 'negative' }, 5);
     }
   }, [password, setNotification, user, username]);
 
@@ -23,23 +24,21 @@ function LoginForm({ user, login, setNotification }) {
   }
   return (
     <>
-      <h2>log in to application</h2>
+      <Header as="h2" textAlign="center">
+        Log in to application
+      </Header>
       <Notification />
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            username
-            <input {...username.props} />
-          </label>
-        </div>
-        <div>
-          <label>
-            password
-            <input {...password.props} />
-          </label>
-        </div>
-        <button type="submit">login</button>
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Field>
+          <input {...username.props} />
+        </Form.Field>
+        <Form.Field>
+          <input {...password.props} />
+        </Form.Field>
+        <Button color="green" type="submit">
+          login
+        </Button>
+      </Form>
     </>
   );
 }

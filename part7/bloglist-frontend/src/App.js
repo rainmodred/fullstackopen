@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import BlogsPage from './pages/BlogsPage';
 import Menu from './components/Menu';
 import LoginFrom from './components/LoginFrom';
 import Blogs from './components/Blogs';
@@ -15,8 +16,6 @@ import { logout, setUser } from './reducers/loginReducer';
 import { initUsers } from './reducers/userReducer';
 
 function App({ user, users, blogs, initBlogs, initUsers, setUser, logout }) {
-  const blogFormRef = React.createRef();
-
   useEffect(() => {
     try {
       initUsers();
@@ -30,57 +29,39 @@ function App({ user, users, blogs, initBlogs, initUsers, setUser, logout }) {
     setUser();
   }, [setUser]);
 
-  function toggleVisibility() {
-    blogFormRef.current.toggleVisibility();
-  }
-
-  function blogForm() {
-    return (
-      <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <BlogForm toggleVisibility={toggleVisibility} />
-      </Togglable>
-    );
-  }
-
   const userById = id => users.find(user => user.id === id);
   const blogById = id => blogs.find(blog => blog.id === id);
 
-  return user.token === null ? (
-    <LoginFrom />
-  ) : (
-    <div>
-      <div></div>
-      <Router>
-        <Menu />
-        <p>
-          {user.token.name} logged in <button onClick={logout}>logout</button>
-        </p>
-
-        <Route
-          exact
-          path="/"
-          render={() => {
-            return (
-              <>
-                {blogForm()}
-                <Blogs />
-              </>
-            );
-          }}
-        />
-        <Route exact path="/users" render={() => <Users users={users} />} />
-        <Route
-          path="/users/:id"
-          render={({ match }) => <User user={userById(match.params.id)} />}
-        />
-        <Route
-          path="/blogs/:id"
-          render={({ match }) => (
+  return (
+    <Router>
+      <Menu />
+      <Route
+        exact
+        path="/"
+        render={() => (user.token ? <BlogsPage /> : <Redirect to="/login" />)}
+      />
+      <Route
+        exact
+        path="/login"
+        render={() => (user.token ? <Redirect to="/" /> : <LoginFrom />)}
+      />
+      <Route
+        exact
+        path="/users"
+        render={() => (user.token ? <Users /> : <Redirect to="/login" />)}
+      />
+      <Route path="/users/:id" render={({ match }) => <User user={userById(match.params.id)} />} />
+      <Route
+        path="/blogs/:id"
+        render={({ match }) =>
+          user.token ? (
             <Blog blog={blogById(match.params.id)} creator={user.token.username} />
-          )}
-        />
-      </Router>
-    </div>
+          ) : (
+            <Redirect to="/login" />
+          )
+        }
+      />
+    </Router>
   );
 }
 

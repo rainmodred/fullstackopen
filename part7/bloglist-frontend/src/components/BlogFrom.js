@@ -1,13 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Form, Button, Header } from 'semantic-ui-react';
 import { useField } from '../hooks/index';
 import { createBlog } from '../reducers/blogReducer';
 import { setNotification } from '../reducers/notificationReducer';
 
 function BlogForm({ createBlog, setNotification, toggleVisibility }) {
-  const title = useField('text');
-  const author = useField('text');
-  const url = useField('text');
+  const title = useField('text', 'title');
+  const author = useField('text', 'author');
+  const url = useField('text', 'url');
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -21,7 +22,7 @@ function BlogForm({ createBlog, setNotification, toggleVisibility }) {
       setNotification(
         {
           message: `a new blog ${title.props.value} by ${author.props.value} added`,
-          type: 'log',
+          type: 'positive',
         },
         5,
       );
@@ -30,7 +31,7 @@ function BlogForm({ createBlog, setNotification, toggleVisibility }) {
       setNotification(
         {
           message: errorMessage,
-          type: 'error',
+          type: 'negative',
         },
         5,
       );
@@ -42,28 +43,30 @@ function BlogForm({ createBlog, setNotification, toggleVisibility }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>create new</h2>
-      <div>
+    <Form style={{ marginBottom: '10px' }} onSubmit={handleSubmit}>
+      <Header as="h2">Create new blog</Header>
+      <Form.Field>
         <label>
           title
           <input {...title.props} />
         </label>
-      </div>
-      <div>
+      </Form.Field>
+      <Form.Field>
         <label>
           author
           <input {...author.props} />
         </label>
-      </div>
-      <div>
+      </Form.Field>
+      <Form.Field>
         <label>
           url
           <input {...url.props} />
         </label>
-      </div>
-      <button type="submit">create</button>
-    </form>
+      </Form.Field>
+      <Button color="green" type="submit">
+        create
+      </Button>
+    </Form>
   );
 }
 

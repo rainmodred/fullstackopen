@@ -1,16 +1,17 @@
 import React from 'react';
+import { Header, List } from 'semantic-ui-react';
 
 export default function User({ user }) {
   if (!user) return null;
   return (
-    <div>
-      <h2>{user.username}</h2>
-      <h3>added blogs</h3>
-      <ul>
+    <>
+      <Header as="h2">{user.username}</Header>
+      <List bulleted>
+        <List.Header>added blogs</List.Header>
         {user.blogs.map(blog => (
-          <li key={blog.id}>{blog.title}</li>
+          <List.Item key={blog.id}>{blog.title}</List.Item>
         ))}
-      </ul>
-    </div>
+      </List>
+    </>
   );
 }

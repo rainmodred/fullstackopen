@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Message } from 'semantic-ui-react';
 
 function Notification(props) {
   const { message, type } = props.notification;
@@ -8,7 +9,11 @@ function Notification(props) {
     return null;
   }
 
-  return <div className={`message ${type}`}>{message}</div>;
+  if (type === 'positive') {
+    return <Message positive>{message}</Message>;
+  }
+
+  return <Message negative>{message}</Message>;
 }
 
 function mapStateToProps(state) {

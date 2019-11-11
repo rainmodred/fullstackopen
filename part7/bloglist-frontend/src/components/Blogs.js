@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Segment, Header } from 'semantic-ui-react';
 
 import Notification from './Notification';
 
@@ -9,12 +10,12 @@ function Blogs({ blogs }) {
 
   return (
     <>
-      <h2>blogs</h2>
+      <Header as="h2">Blogs</Header>
       <Notification />
       {blogs.map(blog => (
-        <div key={blog.id} className="blog">
+        <Segment key={blog.id}>
           <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-        </div>
+        </Segment>
       ))}
     </>
   );

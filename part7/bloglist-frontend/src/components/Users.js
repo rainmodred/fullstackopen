@@ -1,30 +1,40 @@
 import React from 'react';
+import { Table } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-export default function Users({ users }) {
+function Users({ users }) {
   return (
     <div>
       <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>&nbsp;</th>
-            <th>blogs created</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table celled>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>User</Table.HeaderCell>
+            <Table.HeaderCell>Blogs created</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {users.map(user => {
             return (
-              <tr key={user.id}>
-                <td>
+              <Table.Row key={user.id}>
+                <Table.Cell>
                   <Link to={`users/${user.id}`}>{user.username}</Link>
-                </td>
-                <td>{user.blogs.length}</td>
-              </tr>
+                </Table.Cell>
+                <Table.Cell>{user.blogs.length}</Table.Cell>
+              </Table.Row>
             );
           })}
-        </tbody>
-      </table>
+        </Table.Body>
+      </Table>
     </div>
   );
 }
+
+function mapStateToProps(state) {
+  return {
+    users: state.users,
+  };
+}
+
+export default connect(mapStateToProps)(Users);

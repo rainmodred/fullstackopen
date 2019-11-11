@@ -4,12 +4,12 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
+import { Container } from 'semantic-ui-react';
 import blogReducer from './reducers/blogReducer';
 import loginReducer from './reducers/loginReducer';
 import notificationReducer from './reducers/notificationReducer';
 import userReducer from './reducers/userReducer';
 import App from './App';
-import './index.css';
 
 const reducer = combineReducers({
   blogs: blogReducer,
@@ -22,7 +22,9 @@ const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 
 const app = (
   <Provider store={store}>
-    <App />
+    <Container>
+      <App />
+    </Container>
   </Provider>
 );
 
