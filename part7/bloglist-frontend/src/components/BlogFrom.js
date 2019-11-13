@@ -5,10 +5,14 @@ import { useField } from '../hooks/index';
 import { createBlog } from '../reducers/blogReducer';
 import { setNotification } from '../reducers/notificationReducer';
 
-function BlogForm({ createBlog, setNotification, toggleVisibility }) {
+function BlogForm({ user, createBlog, setNotification, toggleVisibility }) {
   const title = useField('text', 'title');
   const author = useField('text', 'author');
   const url = useField('text', 'url');
+
+  let isDisabled = !user.token && true;
+  if (title.props.value === '' || author.props.value === '' || url.props.value === '')
+    isDisabled = true;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -63,7 +67,7 @@ function BlogForm({ createBlog, setNotification, toggleVisibility }) {
           <input {...url.props} />
         </label>
       </Form.Field>
-      <Button color="green" type="submit">
+      <Button disabled={isDisabled} color="green" type="submit">
         create
       </Button>
     </Form>
@@ -73,6 +77,7 @@ function BlogForm({ createBlog, setNotification, toggleVisibility }) {
 function mapStateToProps(state) {
   return {
     blogs: state.blogs,
+    user: state.login,
   };
 }
 

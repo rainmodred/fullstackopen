@@ -11,5 +11,5 @@ export function useField(type, placeholder) {
     setValue('');
   }
 
-  return { props: { value, type, onChange, placeholder }, reset };
+  return { props: { value, type, onChange, placeholder, name: placeholder }, reset };
 }

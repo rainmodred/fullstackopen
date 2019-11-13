@@ -32,31 +32,22 @@ function App({ user, users, blogs, initBlogs, initUsers, setUser, logout }) {
   return (
     <Router>
       <Menu />
-      <Route
-        exact
-        path="/"
-        render={() => (user.token ? <BlogsPage /> : <Redirect to="/login" />)}
-      />
+      <Route exact path="/" render={() => <BlogsPage />} />
       <Route
         exact
         path="/login"
         render={() => (user.token ? <Redirect to="/" /> : <LoginFrom />)}
       />
-      <Route
-        exact
-        path="/users"
-        render={() => (user.token ? <Users /> : <Redirect to="/login" />)}
-      />
+      <Route exact path="/users" render={() => <Users />} />
       <Route path="/users/:id" render={({ match }) => <User user={userById(match.params.id)} />} />
       <Route
         path="/blogs/:id"
-        render={({ match }) =>
-          user.token ? (
-            <Blog blog={blogById(match.params.id)} creator={user.token.username} />
-          ) : (
-            <Redirect to="/login" />
-          )
-        }
+        render={({ match }) => (
+          <Blog
+            blog={blogById(match.params.id)}
+            creator={user.token ? user.token.username : null}
+          />
+        )}
       />
     </Router>
   );

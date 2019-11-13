@@ -9,6 +9,7 @@ import Comments from './Comments';
 
 function Blog({ blog, creator, updateLikes, deleteBlog, setNotification, addComment, history }) {
   if (!blog) return null;
+  console.log(blog);
   const { title, author, url, likes, user, id } = blog;
 
   function handleLikeClick() {

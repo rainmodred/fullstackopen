@@ -18,6 +18,14 @@ function LoginForm({ user, login, setNotification }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (username.props.value === '') {
+      setNotification({ message: `username can't be blank`, type: 'negative' }, 5);
+      return;
+    }
+    if (password.props.value === '') {
+      setNotification({ message: `password can't be blank`, type: 'negative' }, 5);
+      return;
+    }
     await login({ username: username.props.value, password: password.props.value });
     username.reset();
     password.reset();
