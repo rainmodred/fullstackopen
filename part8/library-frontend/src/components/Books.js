@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 
-const GET_BOOK = gql`
+export const GET_BOOKS = gql`
   {
     allBooks {
       title
@@ -14,7 +14,7 @@ const GET_BOOK = gql`
 `;
 
 function Books({ show }) {
-  const { loading, error, data } = useQuery(GET_BOOK);
+  const { loading, error, data } = useQuery(GET_BOOKS);
 
   if (!show) {
     return null;

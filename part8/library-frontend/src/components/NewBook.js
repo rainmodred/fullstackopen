@@ -1,6 +1,28 @@
 import React, { useState } from 'react';
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/react-hooks';
+import { GET_BOOKS } from './Books';
+import { GET_AUTHORS } from './Authors';
+
+const ADD_BOOK = gql`
+  mutation AddBook($title: String!, $author: String!, $published: Int!, $genres: [String!]!) {
+    addBook(title: $title, author: $author, published: $published, genres: $genres) {
+      title
+      published
+      author
+      genres
+    }
+  }
+`;
 
 function NewBook({ show }) {
+  function handleError(error) {
+    console.log(error);
+  }
+  const [addBook] = useMutation(ADD_BOOK, {
+    onError: handleError,
+    refetchQueries: [{ query: GET_BOOKS }, { query: GET_AUTHORS }],
+  });
   const [title, setTitle] = useState('');
   const [author, setAuhtor] = useState('');
   const [published, setPublished] = useState('');
@@ -11,22 +33,22 @@ function NewBook({ show }) {
     return null;
   }
 
-  const submit = async e => {
+  async function submit(e) {
     e.preventDefault();
 
-    console.log('add book...');
+    await addBook({ variables: { title, published: Number.parseInt(published), author, genres } });
 
     setTitle('');
     setPublished('');
     setAuhtor('');
     setGenres([]);
     setGenre('');
-  };
+  }
 
-  const addGenre = () => {
+  function addGenre() {
     setGenres(genres.concat(genre));
     setGenre('');
-  };
+  }
 
   return (
     <div>
