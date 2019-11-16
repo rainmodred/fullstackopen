@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
-function NewBook(props) {
+function NewBook({ show }) {
   const [title, setTitle] = useState('');
   const [author, setAuhtor] = useState('');
   const [published, setPublished] = useState('');
   const [genre, setGenre] = useState('');
   const [genres, setGenres] = useState([]);
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
