@@ -8,8 +8,10 @@ const ADD_BOOK = gql`
   mutation AddBook($title: String!, $author: String!, $published: Int!, $genres: [String!]!) {
     addBook(title: $title, author: $author, published: $published, genres: $genres) {
       title
+      author {
+        name
+      }
       published
-      author
       genres
     }
   }
@@ -24,7 +26,7 @@ function NewBook({ show }) {
     refetchQueries: [{ query: GET_BOOKS }, { query: GET_AUTHORS }],
   });
   const [title, setTitle] = useState('');
-  const [author, setAuhtor] = useState('');
+  const [author, setAuthor] = useState('');
   const [published, setPublished] = useState('');
   const [genre, setGenre] = useState('');
   const [genres, setGenres] = useState([]);
@@ -40,7 +42,7 @@ function NewBook({ show }) {
 
     setTitle('');
     setPublished('');
-    setAuhtor('');
+    setAuthor('');
     setGenres([]);
     setGenre('');
   }
@@ -59,7 +61,7 @@ function NewBook({ show }) {
         </div>
         <div>
           author
-          <input value={author} onChange={({ target }) => setAuhtor(target.value)} />
+          <input value={author} onChange={({ target }) => setAuthor(target.value)} />
         </div>
         <div>
           published
