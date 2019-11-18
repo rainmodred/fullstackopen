@@ -43,6 +43,16 @@ const typeDefs = gql`
     id: ID!
   }
 
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
@@ -69,13 +79,6 @@ const resolvers = {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     allBooks: (root, args) => {
-    // if (args.author && args.genre) {
-    //   return books.filter((b) => b.author === args.author && (b.genres.includes(args.genre)));
-    // }
-    // if (args.author) {
-    //   return books.filter((b) => b.author === args.author);
-    // }
-
       if (args.genre) {
         return Book.find({
           genres: {
@@ -129,10 +132,6 @@ const resolvers = {
     },
     editAuthor: async (root, args) => {
       try {
-        // await Author.updateOne({ name: args.name }, { $set: { born: args.setBornTo } });
-        // const updatedAuthor = await Author.findOne({ name: args.name });
-        // console.log(updatedAuthor);
-        // return updatedAuthor;
         const updatedAuthor = await Author.findOneAndUpdate({ name: args.name },
           { born: args.setBornTo },
           { new: true });
@@ -142,13 +141,6 @@ const resolvers = {
           invalidArgs: args,
         });
       }
-      // const author = authors.find((a) => a.name === args.name);
-      // if (!author) {
-      //   return null;
-      // }
-
-      // const updatedAuthor = { ...author, born: args.setBornTo };
-      // authors = authors.map((a) => (a.name === args.name ? updatedAuthor : a));
     },
   },
 };
