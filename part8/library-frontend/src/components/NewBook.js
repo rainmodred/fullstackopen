@@ -17,10 +17,7 @@ const ADD_BOOK = gql`
   }
 `;
 
-function NewBook({ show }) {
-  function handleError(error) {
-    console.log(error);
-  }
+function NewBook({ show, handleError }) {
   const [addBook] = useMutation(ADD_BOOK, {
     onError: handleError,
     refetchQueries: [{ query: GET_BOOKS }, { query: GET_AUTHORS }],
