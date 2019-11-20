@@ -3,9 +3,12 @@ const {
 } = require('apollo-server');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const { PubSub } = require('apollo-server');
 const Book = require('./models/book');
 const Author = require('./models/author');
 const User = require('./models/user');
+
+const pubsub = new PubSub();
 require('dotenv').config();
 
 mongoose.set('useFindAndModify', false);
@@ -47,7 +50,7 @@ const typeDefs = gql`
 
   type Token {
     value: String!
-  }
+  } 
 
   type Query {
     bookCount: Int!
@@ -77,6 +80,10 @@ const typeDefs = gql`
       password: String!
     ): Token
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }
 `;
 
 const resolvers = {
@@ -93,14 +100,11 @@ const resolvers = {
       }
       return Book.find({}).populate('author');
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: () => Author.find({}).populate('books'),
     me: (root, args, context) => context.currentUser,
   },
   Author: {
-    bookCount: async (root) => {
-      const books = await Book.find({ author: root.id });
-      return books.length;
-    },
+    bookCount: async (root) => root.books.length,
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -108,7 +112,7 @@ const resolvers = {
         title, author, published, genres,
       } = args;
       const { currentUser } = context;
-      console.log(currentUser);
+
       if (!currentUser) {
         throw new AuthenticationError('not authenticated');
       }
@@ -131,15 +135,21 @@ const resolvers = {
         genres,
       });
 
+      const authorToUpdate = await Author.findOne({ name: author });
+
       try {
         await book.save();
+        await authorToUpdate.updateOne({ $push: { books: book } });
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         });
       }
 
-      return Book.findById(book.id).populate('author');
+      const bookINDB = Book.findById(book.id).populate('author');
+      pubsub.publish('BOOK_ADDED', { bookAdded: bookINDB });
+
+      return bookINDB;
     },
     editAuthor: async (root, args, context) => {
       const { currentUser } = context;
@@ -184,6 +194,11 @@ const resolvers = {
       return { value: jwt.sign(userForToken, process.env.SECRET) };
     },
   },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED']),
+    },
+  },
 };
 
 const server = new ApolloServer({
@@ -201,6 +216,7 @@ const server = new ApolloServer({
   },
 });
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`);
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`);
 });

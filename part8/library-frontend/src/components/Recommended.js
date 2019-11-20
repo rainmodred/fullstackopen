@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import BooksList from './BooksList';
-import { GET_BOOKS } from './Books';
+import { GET_BOOKS } from '../graphql/queries';
 
 export default function Recommended({ show, favoriteGenre }) {
   const { loading, error, data } = useQuery(GET_BOOKS);

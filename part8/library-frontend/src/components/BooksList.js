@@ -9,6 +9,7 @@ export default function BookList({ books, genre }) {
       }
     });
   }
+
   return (
     <table>
       <tbody>

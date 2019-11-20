@@ -1,32 +1,35 @@
 import React, { useState } from 'react';
-import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
-import { GET_BOOKS } from './Books';
-import { GET_AUTHORS } from './Authors';
+import { ADD_BOOK, GET_BOOKS, GET_AUTHORS } from '../graphql/queries';
 
-const ADD_BOOK = gql`
-  mutation AddBook($title: String!, $author: String!, $published: Int!, $genres: [String!]!) {
-    addBook(title: $title, author: $author, published: $published, genres: $genres) {
-      title
-      author {
-        name
-      }
-      published
-      genres
-    }
-  }
-`;
-
-function NewBook({ show, handleError }) {
+function NewBook({ show, handleError, client }) {
   const [addBook] = useMutation(ADD_BOOK, {
     onError: handleError,
-    refetchQueries: [{ query: GET_BOOKS }, { query: GET_AUTHORS }],
+    update: (store, response) => {
+      updateCacheWith(response.data.addBook);
+    },
+    refetchQueries: [{ query: GET_AUTHORS }],
   });
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [published, setPublished] = useState('');
   const [genre, setGenre] = useState('');
   const [genres, setGenres] = useState([]);
+
+  const updateCacheWith = addedBook => {
+    const includedIn = (set, object) => {
+      return set.map(book => book.id).includes(object.id);
+    };
+
+    const dataInStore = client.readQuery({ query: GET_BOOKS });
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      dataInStore.allBooks.push(addedBook);
+      client.writeQuery({
+        query: GET_BOOKS,
+        data: dataInStore,
+      });
+    }
+  };
 
   if (!show) {
     return null;
