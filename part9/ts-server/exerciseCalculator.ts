@@ -1,28 +1,28 @@
-interface ExerciseValues {
-  target: number;
-  dailyHours: Array<number>;
-}
+// interface ExerciseValues {
+//   target: number;
+//   dailyHours: Array<number>;
+// }
 
-function parseArguments(args: Array<string>): ExerciseValues {
-  const dailyHours: Array<number> = [];
+// function parseArguments(args: Array<string>): ExerciseValues {
+//   const dailyHours: Array<number> = [];
 
-  for (let i = 3; i < args.length; i++) {
-    if (isNaN(Number(args[i]))) {
-      throw new Error('Provided values were not numbers!');
-    } else {
-      dailyHours.push(Number(args[i]));
-    }
-  }
+//   for (let i = 3; i < args.length; i++) {
+//     if (isNaN(Number(args[i]))) {
+//       throw new Error('Provided values were not numbers!');
+//     } else {
+//       dailyHours.push(Number(args[i]));
+//     }
+//   }
 
-  if (!isNaN(Number(args[2]))) {
-    return {
-      target: +args[2],
-      dailyHours,
-    };
-  } else {
-    throw new Error('Provided values were not numbers!');
-  }
-}
+//   if (!isNaN(Number(args[2]))) {
+//     return {
+//       target: +args[2],
+//       dailyHours,
+//     };
+//   } else {
+//     throw new Error('Provided values were not numbers!');
+//   }
+// }
 
 interface Result {
   periodLength: number;
@@ -34,7 +34,10 @@ interface Result {
   average: number;
 }
 
-function calculateExercises(target: number, dailyHours: Array<number>): Result {
+export function calculateExercises(
+  target: number,
+  dailyHours: Array<number>
+): Result {
   const trainingDays = dailyHours.filter((val) => val > 0).length;
 
   const totalHours = dailyHours.reduce(
@@ -44,7 +47,7 @@ function calculateExercises(target: number, dailyHours: Array<number>): Result {
   const average = totalHours / dailyHours.length;
   const success = average >= target ? true : false;
   let rating = 0;
-  let diff = Math.abs(target - average);
+  const diff = Math.abs(target - average);
   if (average < target) {
     rating = 1;
   } else if (diff > 0 && diff < 0.5) {
@@ -79,9 +82,9 @@ function calculateExercises(target: number, dailyHours: Array<number>): Result {
   };
 }
 
-try {
-  const { target, dailyHours } = parseArguments(process.argv);
-  console.log(calculateExercises(target, dailyHours));
-} catch (e) {
-  console.log('Error, something bad happened, message: ', e.message);
-}
+// try {
+//   const { target, dailyHours } = parseArguments(process.argv);
+//   console.log(calculateExercises(target, dailyHours));
+// } catch (e) {
+//   console.log('Error, something bad happened, message: ', e.message);
+// }
