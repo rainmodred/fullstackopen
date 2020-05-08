@@ -8,8 +8,11 @@ import { Patient } from '../types';
 import { apiBaseUrl } from '../constants';
 import HealthRatingBar from '../components/HealthRatingBar';
 import { useStateValue } from '../state';
+import { useHistory } from 'react-router-dom';
 
 const PatientListPage: React.FC = () => {
+  const history = useHistory();
+
   const [{ patients }, dispatch] = useStateValue();
 
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
@@ -26,7 +29,7 @@ const PatientListPage: React.FC = () => {
     try {
       const { data: newPatient } = await axios.post<Patient>(
         `${apiBaseUrl}/patients`,
-        values
+        values,
       );
       dispatch({ type: 'ADD_PATIENT', payload: newPatient });
       closeModal();
@@ -34,6 +37,10 @@ const PatientListPage: React.FC = () => {
       console.error(e.response.data);
       setError(e.response.data.error);
     }
+  };
+
+  const showPatient = (id: string): void => {
+    history.push(`/patients/${id}`);
   };
 
   return (
@@ -52,8 +59,10 @@ const PatientListPage: React.FC = () => {
         </Table.Header>
         <Table.Body>
           {Object.values(patients).map((patient: Patient) => (
-            <Table.Row key={patient.id}>
-              <Table.Cell>{patient.name}</Table.Cell>
+            <Table.Row key={patient.id} style={{ cursor: 'pointer' }}>
+              <Table.Cell onClick={() => showPatient(patient.id)}>
+                {patient.name}
+              </Table.Cell>
               <Table.Cell>{patient.gender}</Table.Cell>
               <Table.Cell>{patient.occupation}</Table.Cell>
               <Table.Cell>
