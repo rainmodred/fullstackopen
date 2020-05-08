@@ -8,6 +8,11 @@ router.get('/', (_req, res) => {
   res.send(patientsService.getNonSensitiveEntries());
 });
 
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  res.send(patientsService.getPatient(id));
+});
+
 router.post('/', (req, res) => {
   try {
     const newPatient = toNewPatient(req.body);

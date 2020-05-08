@@ -1,6 +1,6 @@
 import patients from '../../data/patients.json';
 
-import { Patient, NewPatient } from '../types';
+import { Patient, NewPatient, PublicPatient } from '../types';
 
 const getNonSensitiveEntries = (): Omit<Patient, 'ssn'>[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
@@ -10,6 +10,13 @@ const getNonSensitiveEntries = (): Omit<Patient, 'ssn'>[] => {
     gender,
     occupation,
   }));
+};
+
+const getPatient = (id: string): PublicPatient => {
+
+  const patient = patients.find((p: Patient) => p.id === id);
+  console.log(patient);
+  return patient;
 };
 
 const addPatient = (patient: NewPatient): Patient => {
@@ -25,4 +32,5 @@ const addPatient = (patient: NewPatient): Patient => {
 export default {
   getNonSensitiveEntries,
   addPatient,
+  getPatient,
 };
