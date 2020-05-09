@@ -1,4 +1,4 @@
-export interface Diagnose {
+export interface Diagnosis {
   code: string;
   name: string;
   lating?: string;
@@ -23,8 +23,8 @@ interface BaseEntry {
 interface OccupationalHealthcareEntry extends BaseEntry {
   type: 'OccupationalHealthcare';
   employerName: string;
-  sickLeave: {
-    starDate: string;
+  sickLeave?: {
+    startDate: string;
     endDate: string;
   };
 }

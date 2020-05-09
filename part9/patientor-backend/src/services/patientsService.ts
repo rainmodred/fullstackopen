@@ -1,28 +1,30 @@
-import patients from '../../data/patients.ts';
+import patients from '../../data/patients';
 
 import { Patient, NewPatient, PublicPatient } from '../types';
 
-const getNonSensitiveEntries = (): Omit<Patient, 'ssn'>[] => {
-  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+const getNonSensitiveEntries = (): PublicPatient[] => {
+  return patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
     id,
     name,
     dateOfBirth,
     gender,
     occupation,
+    entries
   }));
 };
 
-const getPatient = (id: string): PublicPatient => {
-
+const getPatient = (id: string): Patient | undefined => {
   const patient = patients.find((p: Patient) => p.id === id);
-  console.log(patient);
+  if (!patient) {
+    return undefined;
+  }
   return patient;
 };
 
 const addPatient = (patient: NewPatient): Patient => {
   const newPatient = {
-    id: Math.random().toString(),
     ...patient,
+    id: Math.random().toString(),
   };
 
   patients.push(newPatient);
