@@ -44,6 +44,23 @@ const PatientPage: React.FC = () => {
           </Header>
           <p>ssn: {patient.ssn}</p>
           <p>occupation: {patient.occupation}</p>
+          <Header as="h3">entries</Header>
+          {patient.entries.map((entry) => {
+            return (
+              <>
+                <p>
+                  {entry.date} {entry.description}
+                </p>
+                <ul className="ui list">
+                  {entry.diagnosisCodes
+                    ? entry.diagnosisCodes.map((code) => {
+                        return <li key={code}>{code}</li>;
+                      })
+                    : null}
+                </ul>
+              </>
+            );
+          })}
         </>
       ) : null}
     </div>
