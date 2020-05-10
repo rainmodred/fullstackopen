@@ -4,12 +4,12 @@ import { useParams } from 'react-router-dom';
 import { Patient } from '../types';
 import { apiBaseUrl } from '../constants';
 import { Header, Icon, SemanticICONS } from 'semantic-ui-react';
-import { useStateValue } from '../state';
+import EntryDetails from './EntryDetails';
+import './index.css';
 
 const PatientPage: React.FC = () => {
   const { id } = useParams();
   const [patient, setPatient] = useState<Patient | undefined>();
-  const [{ diagnoses }, ,] = useStateValue();
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -33,7 +33,7 @@ const PatientPage: React.FC = () => {
       gName = 'venus';
     }
     if (gender === 'other') {
-      gName = 'mercury';
+      gName = 'genderless';
     }
   }
 
@@ -48,26 +48,7 @@ const PatientPage: React.FC = () => {
           <p>occupation: {patient.occupation}</p>
           <Header as="h3">entries</Header>
           {patient.entries.map((entry) => {
-            return (
-              <div key={entry.id}>
-                <p>
-                  {entry.date} {entry.description}
-                </p>
-                <ul className="ui list">
-                  {entry.diagnosisCodes
-                    ? entry.diagnosisCodes.map((code) => {
-                        const diagnosis = diagnoses.get(code);
-
-                        return (
-                          <li key={code}>
-                            {code} {diagnosis?.name}
-                          </li>
-                        );
-                      })
-                    : null}
-                </ul>
-              </div>
-            );
+            return <EntryDetails key={entry.id} entry={entry} />;
           })}
         </>
       ) : null}

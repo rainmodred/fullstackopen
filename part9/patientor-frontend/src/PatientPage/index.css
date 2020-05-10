@@ -1,0 +1,14 @@
+.entry-details {
+  padding: 15px;
+  border: 2px solid #e2e2e2;
+  border-radius: 10px;
+  color: #ababab;
+}
+
+.entry-details p {
+  font-style: italic;
+}
+
+.entry-details:not(:last-child) {
+  margin-bottom: 10px;
+}
