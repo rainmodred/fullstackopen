@@ -1,25 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { Patient } from '../types';
+import { Patient, Entry } from '../types';
 import { apiBaseUrl } from '../constants';
-import { Header, Icon, SemanticICONS } from 'semantic-ui-react';
+import { Header, Icon, SemanticICONS, Button } from 'semantic-ui-react';
 import EntryDetails from './EntryDetails';
 import './index.css';
+import AddEntryModal, { EntryFormValues } from '../AddEntryModal';
+
+import { addEntry, useStateValue, setPatient } from '../state';
 
 const PatientPage: React.FC = () => {
-  const { id } = useParams();
-  const [patient, setPatient] = useState<Patient | undefined>();
+  const { id } = useParams<{ id: string }>();
+
+  const [{ patients }, dispatch] = useStateValue();
+  const patient = patients[id];
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | undefined>();
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    try {
+      if (id !== undefined) {
+        const { data: newEntry } = await axios.post<Entry>(
+          `${apiBaseUrl}/patients/${id}/entry/`,
+          values,
+        );
+        dispatch(addEntry(id, newEntry));
+      }
+
+      closeModal();
+    } catch (e) {
+      console.error(e.response.data);
+      setError(e.response.data.error);
+    }
+  };
 
   useEffect(() => {
     const fetchPatient = async () => {
       const { data: patientFromApi } = await axios.get<Patient>(
         `${apiBaseUrl}/patients/${id}`,
       );
-
-      setPatient(patientFromApi);
+      dispatch(setPatient(patientFromApi));
     };
-    fetchPatient();
+    if (patient && !patient.ssn) {
+      fetchPatient();
+    }
   }, [id]);
 
   let gName: SemanticICONS = 'mars';
@@ -52,6 +84,14 @@ const PatientPage: React.FC = () => {
           })}
         </>
       ) : null}
+
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onSubmit={submitNewEntry}
+        error={error}
+        onClose={closeModal}
+      />
+      <Button onClick={() => openModal()}>Add New Entry</Button>
     </div>
   );
 };
